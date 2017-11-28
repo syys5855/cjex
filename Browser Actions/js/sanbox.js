@@ -1,7 +1,7 @@
 $(function() {
 
     console.log('sanbox.js executed');
-    $("#btnAddTemplate").after("<button class='btn btn-default' id='test'>testBtn</button>");
+    $("#btnAddTemplate").after("<button class='btn btn-default' id='test'>testBtn2333</button>");
     $(document).on('click', '#test', function(event) {
         console.log('button click');
         apiGet();
@@ -24,4 +24,7 @@ $(function() {
             console.log(err);
         })
     }
-})
+});
+
+
+console.log("chrome--->", chrome);

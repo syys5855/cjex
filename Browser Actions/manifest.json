@@ -29,13 +29,19 @@
         // 代码注入的时间，可选值： "document_start", "document_end", or "document_idle"，最后一个表示页面空闲时，默认document_idle
         "run_at": "document_start"
     }],
+    "background": {
+        // "scripts": ["js/sanbox.bg.js"]
+        "page": "background.html"
+    },
     // 权限申请
     "permissions": [
         "contextMenus", // 右键菜单
         "tabs", // 标签
+        "activeTab",
         "notifications", // 通知
         "webRequest", // web请求
         "webRequestBlocking",
+        "browserAction", //浏览器的图标
         "storage", // 插件本地存储
         "http://*/*", // 可以通过executeScript或者insertCSS访问的网站
         "https://*/*" // 可以通过executeScript或者insertCSS访问的网站
