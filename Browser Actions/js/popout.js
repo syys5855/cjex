@@ -34,3 +34,36 @@ function dataURLtoBlob(dataurl) {
     }
     return new Blob([u8arr], { type: mime });
 }
+
+function capturePic(windowId, options) {
+    return new Promise((res, rej) => {
+        setTimeout(() => {
+            chrome.tabs.captureVisibleTab(windowId, options, res);
+        }, 500);
+    });
+}
+
+function sendMessageToContent(tabId, params) {
+    return new Promise((res, rej) => {
+        chrome.tabs.sendMessage(tabId, params, res);
+    });
+}
+
+
+document.querySelector("#captureFull").onclick = async() => {
+    let tabs = await CommonServer.getCurrentTabs(),
+        curwin = await CommonServer.getCurrentWindow(),
+        dataUrls = [];
+
+    (function autoScroll(tabId, params) {
+        sendMessageToContent(tabId, params).then(async data => {
+            let dataUrl = await capturePic(curwin.id, {});
+            dataUrls.push({
+                dataUrl,
+                scrollTop: params.scrollTop
+            });
+            data.next && autoScroll(tabs[0].id, { type: 'CAPTURE_FULL', scrollTop: data.value });
+            !data.next && console.log(dataUrls);
+        })
+    })(tabs[0].id, { type: 'CAPTURE_FULL', scrollTop: 0 });
+}
