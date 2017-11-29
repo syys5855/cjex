@@ -32,6 +32,7 @@ function getCurrentTab2(cb) {
     chrome.windows.getCurrent((currentWindow) => {
         chrome.tabs.query({ active: true, windowId: currentWindow.id }, (tabs) => {
             console.log('active tabs2--->', tabs.length ? tabs[0].id : null)
+            typeof cb === "function" && cb(tabs);
         })
     })
 }
@@ -40,19 +41,20 @@ function getCurrentTab2(cb) {
 // getCurrentTab2();
 
 
-
-chrome.webRequest.onBeforeRequest.addListener((details) => {
-    // console.log('reciver webRequest');
-    // chrome.notifications.create(null, {
-    //     type: 'basic',
-    //     iconUrl: 'img/chrome.png',
-    //     title: 'title',
-    //     message: 'something....',
-    // });
-    console.log('before request---->', details);
-}, { urls: ["<all_urls>"], types: ["xmlhttprequest"] });
-
-
 chrome.webRequest.onCompleted.addListener((details) => {
-    console.log('onCompleted--->', details);
-}, { urls: ["<all_urls>"], types: ["xmlhttprequest"] })
+    sendMessageToContent({ type: 'BAMSG_WT_INBOX' });
+}, { urls: ["*://*.worktile.com/api/tasks/inbox*"], types: ["xmlhttprequest"] });
+
+
+function sendMessageToContent(message, callback) {
+    getCurrentTab2((tabs) => {
+        console.log('sendMessageToContent-->', tabs);
+        if (tabs.length) {
+            chrome.tabs.sendMessage(tabs[0].id, message, response => {
+                typeof callback === "function" && callback(null, response);
+            });
+        } else {
+            typeof callback === "function" && callback('no active tab');
+        }
+    })
+}
