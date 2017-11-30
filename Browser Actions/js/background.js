@@ -22,6 +22,25 @@ chrome.windows.getCurrent(function(currentWindow) {
     console.log("currentWindow-->", currentWindow);
 });
 
+
+chrome.webRequest.onCompleted.addListener((details) => {
+    let path = _.get(details.url.match(/api(.+?)\?/), '[1]');
+    if (path === "/tasks/inbox") {
+        sendMessageToContent({ type: 'BAMSG_WT_TASKSINBOX' });
+    } else if (path === "/team") {
+        sendMessageToContent({ type: 'BAMSG_WT_TEAM' })
+    }
+
+}, { urls: ["*://*.worktile.com/api/*"], types: ["xmlhttprequest"] });
+
+
+chrome.runtime.onMessage.addListener(({ type, data }) => {
+    if (type === "WT_INBOX_SEND") {
+        console.log('reciver msg form content script ', data);
+    }
+})
+
+
 function getCurrentTab() {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         console.log('active tabs1--->', tabs.length ? tabs[0].id : null)
@@ -40,10 +59,6 @@ function getCurrentTab2(cb) {
 // getCurrentTab();
 // getCurrentTab2();
 
-
-chrome.webRequest.onCompleted.addListener((details) => {
-    sendMessageToContent({ type: 'BAMSG_WT_INBOX' });
-}, { urls: ["*://*.worktile.com/api/tasks/inbox*"], types: ["xmlhttprequest"] });
 
 
 function sendMessageToContent(message, callback) {

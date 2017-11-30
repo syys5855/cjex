@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <script>
+        // 这里相当于 除以2 了  documentElement.clientWidth（deviceWidth） = 布局窗口/dpr
+        var ftSize = document.documentElement.clientWidth / 7.5 + 'px';
+        document.documentElement.style.fontSize = ftSize;
+        console.log(ftSize);
+    </script>
+    <title>Document</title>
+    <style>
+        .block {
+            width: 2rem;
+            height: 2rem;
+            background: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="block"></div>
+</body>
+
+</html>

@@ -1,7 +1,7 @@
 {
-    "name": "aaa",
+    "name": "aaa1",
     "manifest_version": 2,
-    "version": "0.0.2",
+    "version": "0.0.4",
     "description": "this is hello world",
     "browser_action": {
         "default_icon": "icon.png",
@@ -32,7 +32,7 @@
         {
             //"matches": ["http://*/*", "https://*/*"],
             // "<all_urls>" 表示匹配所有地址
-            "matches": ["*://*.worktile.com/tasks/*"],
+            "matches": ["*://*.worktile.com/*"],
             // 多个JS按顺序注入
             "js": ["js/jquery-3.2.1.min.js", "js/worktile.js"],
             // JS的注入可以随便一点，但是CSS的注意就要千万小心了，因为一不小心就可能影响全局样式
@@ -59,6 +59,7 @@
         "webRequestBlocking",
         "browserAction", //浏览器的图标
         "storage", // 插件本地存储
+        "<all_urls>",
         "http://*/*", // 可以通过executeScript或者insertCSS访问的网站
         "https://*/*" // 可以通过executeScript或者insertCSS访问的网站
     ]
