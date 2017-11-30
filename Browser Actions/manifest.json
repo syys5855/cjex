@@ -1,5 +1,5 @@
 {
-    "name": "test",
+    "name": "aaa",
     "manifest_version": 2,
     "version": "0.0.2",
     "description": "this is hello world",
@@ -51,9 +51,9 @@
     },
     // 权限申请
     "permissions": [
+        "activeTab",
         "contextMenus", // 右键菜单
         "tabs", // 标签
-        "activeTab",
         "notifications", // 通知
         "webRequest", // web请求
         "webRequestBlocking",
