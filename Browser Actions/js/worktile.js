@@ -1,6 +1,7 @@
 $(function() {
     const TS = {
-        uncompleted: 'uncompleted'
+        uncompleted: 'uncompleted',
+        completed: 'completed'
     }
     const cacheDOM = new Map();
     const linkText = '哈哈哈哈，嗝~~~';
@@ -9,7 +10,8 @@ $(function() {
     onMessageHandler.types = {
         handlerInbox: {
             handler() {
-                if (!cacheDOM.has("#exptInbox")) {
+                // 当页面跳转的时候 页面尚但是缓存还在 所以 需要一个同步的机制 可封装一个 方法
+                if (!isElementExist("#exptInbox")) {
                     getEl('task-header .title').then(el => {
                         let link = document.createElement('a'),
                             attr = {
@@ -28,7 +30,7 @@ $(function() {
         },
         handlerExptTeam: {
             handler() {
-                if (!cacheDOM.has("#exptTeam")) {
+                if (!isElementExist("#exptTeam")) {
                     getEl('.nav-apps').then(el => {
                         let li = document.createElement("li"),
                             attr = {
@@ -66,14 +68,20 @@ $(function() {
         console.log('send to background ok');
     });
 
-    $(document).on('click', '#exptTeam', async() => {
-        const response = await Promise.all([apiWTTeam(), apiTree(), apiProjectNav()]);
-        console.log('response--->', response);
-        let projectNavs = response[2];
-        let projects = await apiProjects(projectNavs.projects);
-        console.log(projects);
-    });
+    // $(document).on('click', '#exptTeam', async() => {
+    //     const response = await Promise.all([apiWTTeam(), apiTree(), apiProjectNav()]);
+    //     console.log('response--->', response);
+    //     let projectNavs = response[2];
+    //     let projects = await apiProjects(projectNavs.projects);
+    //     console.log(projects);
+    // });
 
+
+    $(document).on('click', '#exptTeam', async() => {
+        apiWtBox();
+        // let iframe = document.createElement('iframe');
+
+    });
 
     function sendMsgToBackground(message) {
         return new Promise(res => {
@@ -127,6 +135,10 @@ $(function() {
         }
     }
 
+    function isElementExist(selector) {
+        return document.querySelector(selector) !== null;
+    }
+
     // api
     const fetch = (options) => {
         let defaultConfig = {
@@ -136,8 +148,9 @@ $(function() {
         }
         let opt = Object.assign({}, defaultConfig, options);
         // 自动添加 t 时间戳
-        opt.type === "GET" && !opt.data.hasOwnProperty('t')
-        opt.data.t = Date.now();
+        opt.type === "GET" &&
+            !opt.data.hasOwnProperty('t') &&
+            (opt.data.t = Date.now());
 
         return new Promise((res, rej) => {
             $.ajax(opt).then(response => {
@@ -154,6 +167,28 @@ $(function() {
             ts
         }
     });
+
+
+    // https://wt-box.worktile.com/drives/5a27b278cf9190609715dd75/from-s3?team_id=59b646c1c827387d4debeda1&version=1&ref_id=5a25f3f09fa42f7545d545e2&action=
+
+    const apiWtBox = () => {
+        console.log('enter');
+        debugger;
+        $.ajax({
+            url: 'https://wt-box.worktile.com/drives/5a27b278cf9190609715dd75/from-s3',
+            data: {
+                team_id: "59b646c1c827387d4debeda1",
+                version: "1",
+                ref_id: "5a25f3f09fa42f7545d545e2"
+            },
+        }).then(response => {
+            // let blob = new Blob(response.responseText);
+            console.log(response.responseText);
+
+        }).catch(err => {
+            console.log(err);
+        })
+    }
 
     const apiTree = (async = false) => fetch({
         url: '/api/departments/tree',
@@ -179,7 +214,11 @@ $(function() {
     }
 
     const apiWTTeam = () => fetch({ url: '/api/team' });
+
     // 获取projectId等信息
     const apiProjectNav = () => fetch({ url: '/api/project-nav' });
+
+    // 获取任务的详情
+    const apiTasks = (taskId) => fetch({ url: '/api/tasks/{taskId}'.replace('{taskId}', taskId) });
 
 })

@@ -1,10 +1,37 @@
 <meta charset="utf-8">
+<style>
+    .popout-group-item {
+        list-style: none;
+        min-width: 200px;
+        padding: 0px;
+        margin: 0px;
+    }
+    
+    .popout-group-item>li {
+        height: 30px;
+        line-height: 30px;
+        text-indent: 1em;
+    }
+    
+    .popout-group-item a {
+        text-decoration: none;
+    }
+    
+    .popout-group-item>li:hover {
+        background-color: #22d7bb;
+        color: #fff;
+    }
+    
+    .popout-group-item>li:hover a {
+        color: #fff;
+    }
+</style>
 <h1>
     这是一个popoutPage
 </h1>
 
 <div>
-    <ul>
+    <ul class="popout-group-item">
         <li>
             <a class="btn btn-primary" id="bgElem" href="###">点击获取background中的任务</a>
         </li>
@@ -14,6 +41,10 @@
         <li>
             <a href="###" id="captureFull">capture</a>
         </li>
+        <li>
+            <a href="###" id="createNewTab">createNewTab</a>
+        </li>
+
     </ul>
 </div>
 <script type="text/javascript" charset="utf-8" src='js/popout.js'></script>

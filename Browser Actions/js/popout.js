@@ -146,3 +146,25 @@ document.querySelector("#captureFull").onclick = async() => {
     //     url: '/canvas.html?src=' + imgUrl,
     // });
 }
+
+document.querySelector("#createNewTab").onclick = () => {
+    chrome.tabs.query({
+        active: true,
+        currentWindow: true
+    }, async tabs => {
+        const bg = chrome.extension.getBackgroundPage();
+        chrome.storage.local.set({ 'LASTTAB': tabs[0] });
+        tab = await createNewTab({
+            url: 'http://127.0.0.1:1234/Browser%20Actions/test.html'
+        });
+        chrome.tabs.sendMessage({
+            type: 'SAVE_CURRENT_TAB',
+            data: {
+                tab: tabs[0]
+            }
+        })
+    })
+}
+
+
+//

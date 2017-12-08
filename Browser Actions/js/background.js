@@ -1,4 +1,6 @@
 console.log('bg execute');
+
+// chrome api
 chrome.browserAction.setBadgeText({ text: 'new' });
 chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
 
@@ -34,11 +36,17 @@ chrome.webRequest.onCompleted.addListener((details) => {
 }, { urls: ["*://*.worktile.com/api/*"], types: ["xmlhttprequest"] });
 
 
-chrome.runtime.onMessage.addListener(({ type, data }) => {
+chrome.runtime.onMessage.addListener(({ type, data }, sender, req) => {
     if (type === "WT_INBOX_SEND") {
         console.log('reciver msg form content script ', data);
+    } else if (type === "TAB_LOADED") {
+        console.log(data);
+        req({ type: 'SOMETYPE', data: 'hahahah' })
     }
-})
+});
+
+// define variable
+const cache = new Cache();
 
 
 function getCurrentTab() {
@@ -73,3 +81,25 @@ function sendMessageToContent(message, callback) {
         }
     })
 }
+
+// 单例
+function Cache() {
+    if (Cache.instance) {
+        return Cache.instance;
+    }
+
+    let cache = new Map();
+    let instance = {
+        get(key) {
+            return cache.get(key)
+        },
+        set(key, value) {
+            cache.set(key, value);
+        }
+    }
+    Cache.instance = instance;
+    return instance;
+}
+
+
+// // https://wt-box.worktile.com/drives/5a27b278cf9190609715dd75/from-s3?team_id=59b646c1c827387d4debeda1&version=1&ref_id=5a25f3f09fa42f7545d545e2&action=
